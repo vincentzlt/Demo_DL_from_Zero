@@ -9,7 +9,12 @@ class Perception(object):
         return 'weights\t:%s\nbias\t:%f\n' % (self.weights, self.bias)
 
     def predict(self, input_vec):
-        return self.activator(reduce(lambda a, b: a + b, map(lambda x: x[0] * x[1], zip(input_vec, self.weights)), 0.0) + self.bias)
+        # return self.activator(reduce(lambda a, b: a + b, map(lambda x: x[0] *
+        # x[1], zip(input_vec, self.weights)), 0.0) + self.bias)
+        sum_weight = 0
+        for (_x, _y) in zip(input_vec, self.weights):
+            sum_weight += _x * _y
+        return self.activator(sum_weight + self.bias)
 
     def train(self, input_vecs, lables, iteration, rate):
         for i in range(iteration):
@@ -23,8 +28,11 @@ class Perception(object):
 
     def _update_weights(self, input_vec, output, label, rate):
         delta = label - output
-        self.weights = map(
-            lambda x: x[1] + rate * delta * x[0], zip(input_vec, self.weights))
+        # self.weights = map(
+        # lambda x: x[1] + rate * delta * x[0], zip(input_vec, self.weights))
+
+        self.weights = [_y + rate * delta *
+                        _x for (_x, _y) in zip(input_vec, self.weights)]
         self.bias += rate * delta
 
 
