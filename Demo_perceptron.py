@@ -15,7 +15,7 @@ class Perceptron():
     def predict(self, input_vec):
         '''输入向量，输入感知器计算结果'''
 
-        return sum([w * v for w, v in zip(self.weights, input_vec)]) + self.bias
+        return self.activator(sum([w * v for w, v in zip(self.weights, input_vec)]) + self.bias)
 
     def train(self, input_vecs, labels, iteration, rate):
         '''输入训练数据：向量，label，训练次数，学习率'''
