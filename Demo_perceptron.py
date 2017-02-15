@@ -1,62 +1,61 @@
-class Perception(object):
+class Perceptron():
 
     def __init__(self, input_num, activator):
+        '''初始化感知器，设置输入参数个数以及激活函数
+        激活函数类型为double->double
+        '''
         self.activator = activator
-        self.weights = [0.0 for _ in range(input_num)]
-        self.bias = 0.0
+        self.weights = [0.0 for _ in range(input_num)]  # 初始化权重
+        self.bias = 0.0  # 初始化bias
 
     def __str__(self):
-        return 'weights\t:%s\nbias\t:%f\n' % (self.weights, self.bias)
+        '''打印学习到的权重和bias'''
+        return '权重：\n{}\nbias：\n{}\n'.format(self.weights, self.bias)
 
     def predict(self, input_vec):
-        # return self.activator(reduce(lambda a, b: a + b, map(lambda x: x[0] *
-        # x[1], zip(input_vec, self.weights)), 0.0) + self.bias)
-        sum_weight = 0
-        for (_x, _y) in zip(input_vec, self.weights):
-            sum_weight += _x * _y
-        return self.activator(sum_weight + self.bias)
+        '''输入向量，输入感知器计算结果'''
 
-    def train(self, input_vecs, lables, iteration, rate):
+        return sum([w * v for w, v in zip(self.weights, input_vec)]) + self.bias
+
+    def train(self, input_vecs, labels, iteration, rate):
+        '''输入训练数据：向量，label，训练次数，学习率'''
         for i in range(iteration):
-            self._one_iteration(input_vecs, lables, rate)
+            self._one_iteration(input_vecs, labels, rate)
+            print(self)
 
     def _one_iteration(self, input_vecs, labels, rate):
-        samples = zip(input_vecs, labels)
-        for (input_vec, label) in samples:
+        '''一次迭代'''
+        for input_vec, label in zip(input_vecs, labels):
             output = self.predict(input_vec)
             self._update_weights(input_vec, output, label, rate)
 
     def _update_weights(self, input_vec, output, label, rate):
-        delta = label - output
-        # self.weights = map(
-        # lambda x: x[1] + rate * delta * x[0], zip(input_vec, self.weights))
-
-        self.weights = [_y + rate * delta *
-                        _x for (_x, _y) in zip(input_vec, self.weights)]
-        self.bias += rate * delta
+        '''感知器权重更新'''
+        d = label - output
+        self.weights = [weight + rate * d * vec_dem for vec_dem,
+                        weight in zip(input_vec, self.weights)]
+        self.bias += d * rate
 
 
 def f(x):
+    '''激活函数'''
     return 1 if x > 0 else 0
 
 
-def get_training_dataset():
+def get_training_data():
+    '''输入数据'''
     input_vecs = [[1, 1], [0, 0], [1, 0], [0, 1]]
     labels = [1, 0, 0, 0]
     return input_vecs, labels
 
 
-def train_and_perceptron():
-    p = Perception(2, f)
-    input_vecs, labels = get_training_dataset()
+def train_perceptron():
+    p = Perceptron(2, f)
+    input_vecs, labels = get_training_data()
     p.train(input_vecs, labels, 10, 0.1)
     return p
 
-if __name__ == "__main__":
-    and_perceptron = train_and_perceptron()
-    print(and_perceptron)
+and_perceptron = train_perceptron()
 
-    print('1 and 1 = %d' % and_perceptron.predict([1, 1]))
-    print('0 and 0 = %d' % and_perceptron.predict([0, 0]))
-    print('1 and 0 = %d' % and_perceptron.predict([1, 0]))
-    print('0 and 1 = %d' % and_perceptron.predict([0, 1]))
+print(and_perceptron)
+and_perceptron.predict([0, 1])

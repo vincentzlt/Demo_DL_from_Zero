@@ -6,7 +6,7 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": true,
-            "pythonPath": "${workspaceRoot}/venv/bin/python",
+            "pythonPath": "python",
             "program": "${file}",
             "cwd": "${workspaceRoot}",
             "debugOptions": [
