@@ -54,8 +54,8 @@ def train_perceptron():
     input_vecs, labels = get_training_data()
     p.train(input_vecs, labels, 10, 0.1)
     return p
+if __name__=='__main__':
+    and_perceptron = train_perceptron()
 
-and_perceptron = train_perceptron()
-
-print(and_perceptron)
-and_perceptron.predict([0, 1])
+    print(and_perceptron)
+    and_perceptron.predict([0, 1])
